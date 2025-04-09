@@ -1,12 +1,3 @@
-import tkinter as tk
+import turtle as t
 
-root = tk.Tk()
-root.geometry('600x900+700+50')
-
-image = tk.PhotoImage(file="image.png")
-
-
-
-
-
-root.mainloop()
+# TODO Create screen
