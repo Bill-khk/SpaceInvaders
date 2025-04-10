@@ -1,15 +1,13 @@
 import turtle
 from turtle import Screen, Turtle
 from PIL import Image
-
+from spaceship import Spaceship
 screen = Screen()
 screen.setup(width=600, height=900)
-# screen.tracer(0)
-
-# Using pgn icon as turtle
-shape_spaceship = 'gif/vaisseau-spatial.gif'
+# screen.tracer(0) #Can be used with screen.update to increase the code speed
 
 
+# Used to create small version of PNG icon
 def resize(URL):
     img = Image.open(URL)
     width, height = img.size
@@ -19,12 +17,11 @@ def resize(URL):
     return new_URL
 
 
-shape_spaceship_shape = resize(shape_spaceship)
-turtle.register_shape(shape_spaceship_shape)
-
-spaceship = Turtle()
-spaceship.shape(shape_spaceship_shape)
-spaceship.teleport(0, -400)
+vessel = Spaceship()
+playing = True
+screen.listen()
+screen.onkey(vessel.move_Right, 'Right')
+screen.onkey(vessel.move_Left, 'Left')
 
 # screen.update()
-screen.exitonclick()
+screen.mainloop()
