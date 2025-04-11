@@ -1,3 +1,4 @@
+import time
 import turtle
 from turtle import Screen, Turtle
 from PIL import Image
@@ -6,9 +7,7 @@ from invader import Bug, Spider, Dragon
 
 screen = Screen()
 screen.setup(width=600, height=900)
-
-
-# screen.tracer(0) #Can be used with screen.update to increase the code speed
+screen.tracer(0)  #Can be used with screen.update to increase the code speed
 
 
 # Used to create small version of PNG icon
@@ -29,18 +28,14 @@ def spawn_monsters(row=3, col=7):
             Bug(x_origin, y_origin)
             x_origin += 80
         y_origin -= 70
+    screen.update()
 
 
-vessel = Spaceship()
+vessel = Spaceship(screen)
 spawn_monsters()
 screen.listen()
 screen.onkey(vessel.move_Right, 'Right')
 screen.onkey(vessel.move_Left, 'Left')
-
-playing = True
-while playing:
-    vessel.shooting()  # TODO define
-
 
 # screen.update()
 screen.mainloop()
