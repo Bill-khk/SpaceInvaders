@@ -9,13 +9,22 @@ class Spaceship(Turtle):
 
     def __init__(self, screen):
         super().__init__()
+        # Initialization
         self.shape(self.spaceship_url)  # Then apply it
         self.teleport(0, -400)
         self.penup()
         self.speed(0)
+        # Characteristics
+        self.speed = 40
+        self.power = 20
+        # Game
         self.screen = screen
         self.shooting = True
+
+
+
         self.auto_shoot()
+
 
     def move_Right(self):
         self.setheading(0)
@@ -55,4 +64,6 @@ class Missile(Turtle):
             self.exist = False
         self.vessel.screen.update()
 
-
+    # TODO define
+    def check_missile(self):
+        pass
