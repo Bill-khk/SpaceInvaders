@@ -3,7 +3,7 @@ from turtle import Turtle
 
 
 class Spaceship(Turtle):
-    spaceship_url = 'gif/vaisseau-spatial2.gif'
+    spaceship_url = 'gif/vessel.gif'
     turtle.register_shape(spaceship_url)  # Register first
 
     def __init__(self):
@@ -20,3 +20,6 @@ class Spaceship(Turtle):
     def move_Left(self):
         self.setheading(180)
         self.forward(40)
+
+    def shooting(self):
+        pass
