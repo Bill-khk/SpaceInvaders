@@ -18,6 +18,7 @@ class Spaceship(Turtle):
         # Characteristics
         self.speed = 40
         self.power = 20
+        self.missile = 1
         # Game
         self.screen = screen
         self.shooting = True
@@ -67,17 +68,55 @@ class Missile(Turtle):
         if self.exist:
             for invader in self.vessel.invaders:
                 if invader.xcor() + 20 >= self.xcor() >= invader.xcor() - 20 and self.ycor() >= invader.ycor() - 20:
-                    print('Hit')
                     self.exist = False
                     self.hideturtle()
                     invader.life -= self.vessel.power
                     if invader.life <= 0:
+                        print('Invader destroyed')
                         invader.hideturtle()
+                        self.random_drop(invader)
                         invader.teleport(1000, 1000)
-                        # TODO Random drop power
 
 
+    def random_drop(self, invader):
+        luck = random.randint(1, 10)
+        if luck % 2 == 0:
+            print('Gift')
+            Gift(self.vessel, invader)
 
-    # TODO define
-    def check_missile(self):
-        pass
+
+class Gift(Turtle):
+    gift_url = 'gif/star2.gif'
+    turtle.register_shape(gift_url)  # Register first
+
+    def __init__(self, vessel, invader):
+        super().__init__()
+        self.penup()
+        self.teleport(0,0)
+        self.teleport(x=invader.xcor(), y=invader.ycor())
+        self.shape(self.gift_url)
+        self.setheading(270)
+        self.vessel = vessel
+        self.exist = True
+        self.move()
+
+    def move(self):
+        if self.ycor() > -450:  # Bop of screen limit
+            self.forward(20)
+            turtle.ontimer(self.move, 100)  # Automatically call move every 50ms
+        else:
+            print('Lost gift')
+            self.hideturtle()
+            self.exist = False
+
+        self.check_pickup()
+        self.vessel.screen.update()
+
+    #TODO Correct this function
+    def check_pickup(self):
+        if self.exist:
+            if self.vessel.xcor() + 20 >= self.xcor() >= self.vessel.xcor() - 20 and self.ycor() >= self.vessel.ycor() - 20:
+                print('picked up')
+                self.hideturtle()
+                self.teleport(1000, 1000)
+                self.vessel.missile += 1
