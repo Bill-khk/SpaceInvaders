@@ -1,13 +1,14 @@
 import time
 import turtle
 from turtle import Turtle
+import random
 
 
 class Spaceship(Turtle):
     spaceship_url = 'gif/vessel.gif'
     turtle.register_shape(spaceship_url)  # Register first
 
-    def __init__(self, screen):
+    def __init__(self, screen, invaders):
         super().__init__()
         # Initialization
         self.shape(self.spaceship_url)  # Then apply it
@@ -20,11 +21,9 @@ class Spaceship(Turtle):
         # Game
         self.screen = screen
         self.shooting = True
-
-
+        self.invaders = invaders
 
         self.auto_shoot()
-
 
     def move_Right(self):
         self.setheading(0)
@@ -49,11 +48,10 @@ class Missile(Turtle):
         self.shape('classic')
         self.setheading(90)
         self.penup()
-        self.teleport(x=vessel.xcor(), y=vessel.ycor()+10)
+        self.teleport(x=vessel.xcor(), y=vessel.ycor() + 10)
         self.exist = True
         self.vessel = vessel
         self.move()  # Missile always moves
-
 
     def move(self):
         if self.ycor() < 450:  # Top of screen limit
@@ -62,7 +60,23 @@ class Missile(Turtle):
         else:
             self.hideturtle()
             self.exist = False
+        self.check_hit()
         self.vessel.screen.update()
+
+    def check_hit(self):
+        if self.exist:
+            for invader in self.vessel.invaders:
+                if invader.xcor() + 20 >= self.xcor() >= invader.xcor() - 20 and self.ycor() >= invader.ycor() - 20:
+                    print('Hit')
+                    self.exist = False
+                    self.hideturtle()
+                    invader.life -= self.vessel.power
+                    if invader.life <= 0:
+                        invader.hideturtle()
+                        invader.teleport(1000, 1000)
+                        # TODO Random drop power
+
+
 
     # TODO define
     def check_missile(self):

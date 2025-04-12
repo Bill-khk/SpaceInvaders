@@ -20,18 +20,21 @@ def resize(URL):
     return new_URL
 
 
+monster_list = []
+
+
 def spawn_monsters(row=3, col=7):
     y_origin = 350
     for i in range(row):
         x_origin = -250
         for y in range(col):
-            Bug(x_origin, y_origin)
+            monster_list.append(Bug(x_origin, y_origin))
             x_origin += 80
         y_origin -= 70
     screen.update()
 
 
-vessel = Spaceship(screen)
+vessel = Spaceship(screen, monster_list)
 spawn_monsters()
 screen.listen()
 screen.onkey(vessel.move_Right, 'Right')
