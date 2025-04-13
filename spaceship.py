@@ -86,7 +86,7 @@ class Missile(Turtle):
 
 
 class Gift(Turtle):
-    gift_url = 'gif/star2.gif'
+    gift_url = 'gif/star.gif'
     turtle.register_shape(gift_url)  # Register first
 
     def __init__(self, vessel, invader):
@@ -103,20 +103,19 @@ class Gift(Turtle):
     def move(self):
         if self.ycor() > -450:  # Bop of screen limit
             self.forward(20)
+            self.check_pickup()
             turtle.ontimer(self.move, 100)  # Automatically call move every 50ms
         else:
             print('Lost gift')
             self.hideturtle()
             self.exist = False
 
-        self.check_pickup()
         self.vessel.screen.update()
 
-    #TODO Correct this function
     def check_pickup(self):
         if self.exist:
-            if self.vessel.xcor() + 20 >= self.xcor() >= self.vessel.xcor() - 20 and self.ycor() >= self.vessel.ycor() - 20:
-                print('picked up')
+            if self.vessel.xcor() + 20 >= self.xcor() >= self.vessel.xcor() - 20 and self.ycor() <= self.vessel.ycor() + 20:
+                # print(f'picked up : {self.vessel.xcor() + 20} >= {self.xcor()} >= {self.vessel.xcor() - 20} and {self.ycor()} <= {self.vessel.ycor() + 20}')
                 self.hideturtle()
                 self.teleport(1000, 1000)
                 self.vessel.missile += 1
