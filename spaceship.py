@@ -37,12 +37,12 @@ class Spaceship(Turtle):
         self.screen.update()
 
     def auto_shoot(self):
-        if self.shooting: # TODO Correct this
+        if self.shooting:
             for nb_missile in range(1, self.missile+1):
                 if self.missile % 2 == 0:
-                    Missile(self, True, nb_missile+1)
+                    Missile(self, True, nb_missile)
                 else:
-                    Missile(self, False, nb_missile+1)
+                    Missile(self, False, nb_missile)
         turtle.ontimer(self.auto_shoot, 400)  # fire every 400 ms
         self.screen.update()
 
@@ -67,9 +67,11 @@ class Missile(Turtle):
                 if nb % 2 == 0:  # Half are positioned on the left part of the vessel
                     index = -1
                     nb_index = nb/2
+                    self.color('blue')
                 else:
                     index = 1
                     nb_index = (nb-1)/2
+                    self.color('green')
                 self.teleport(x=vessel.xcor() + (index * nb_index * 15) + (index * 10), y=vessel.ycor() + 10)
 
         self.exist = True
@@ -83,6 +85,7 @@ class Missile(Turtle):
         else:
             self.hideturtle()
             self.exist = False
+            # TODO Need to stop the move() or destroy the missile
         self.check_hit()
         self.vessel.screen.update()
 
