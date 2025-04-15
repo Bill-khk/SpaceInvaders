@@ -36,43 +36,42 @@ class Spaceship(Turtle):
         self.forward(40)
         self.screen.update()
 
+    def upgrade_weapon(self):
+        if self.missile < 5:
+            self.missile += 1
+        else:
+            print("Maximum power reached!")
+
     def auto_shoot(self):
         if self.shooting:
-            for nb_missile in range(1, self.missile+1):
-                if self.missile % 2 == 0:
-                    Missile(self, True, nb_missile)
-                else:
-                    Missile(self, False, nb_missile)
-        turtle.ontimer(self.auto_shoot, 400)  # fire every 400 ms
+            spacing = 20  # pixels between missiles
+            total_missiles = self.missile
+            offset = (total_missiles - 1) / 2 * spacing
+            # Ex:
+            # total_missiles 4 : offset = 1.5*20 = 30
+            # total_missiles 2 : offset = 0.5*20 = 10
+
+            for i in range(total_missiles):
+                # Positions are centered around the ship: left to right
+                x_offset = (i * spacing) - offset
+                # Ex:
+                # x_offset 4 missiles = 0-30 = -30, 20-30 = -10, 40-30 = 10, 60-30 = 30
+                # x_offset 2 missiles = 0-10 = -10, 20-10 = 10
+
+                Missile(self, x_offset)
+        turtle.ontimer(self.auto_shoot, 400)
         self.screen.update()
 
 
 class Missile(Turtle):
-    def __init__(self, vessel, option, nb):
+    def __init__(self, vessel, x_offset):
         super().__init__()
         self.shape('classic')
         self.setheading(90)
         self.penup()
-        if option:  # If pair
-            if nb % 2 == 0:  # Half are positioned on the left part of the vessel
-                index = -1
-            else:
-                index = 1
-            self.teleport(x=vessel.xcor() + (index * nb * 15), y=vessel.ycor() + 10)
-        else:
-            if nb == 1:
-                self.teleport(x=vessel.xcor(), y=vessel.ycor() + 10)
-                self.color('red')
-            else:
-                if nb % 2 == 0:  # Half are positioned on the left part of the vessel
-                    index = -1
-                    nb_index = nb/2
-                    self.color('blue')
-                else:
-                    index = 1
-                    nb_index = (nb-1)/2
-                    self.color('green')
-                self.teleport(x=vessel.xcor() + (index * nb_index * 15) + (index * 10), y=vessel.ycor() + 10)
+
+        # Positioning missile based on offset
+        self.teleport(x=vessel.xcor() + x_offset, y=vessel.ycor() + 10)
 
         self.exist = True
         self.vessel = vessel
@@ -85,7 +84,6 @@ class Missile(Turtle):
         else:
             self.hideturtle()
             self.exist = False
-            # TODO Need to stop the move() or destroy the missile
         self.check_hit()
         self.vessel.screen.update()
 
@@ -142,4 +140,4 @@ class Gift(Turtle):
                 # print(f'picked up : {self.vessel.xcor() + 20} >= {self.xcor()} >= {self.vessel.xcor() - 20} and {self.ycor()} <= {self.vessel.ycor() + 20}')
                 self.hideturtle()
                 self.teleport(1000, 1000)
-                self.vessel.missile += 1
+                self.vessel.upgrade_weapon()
