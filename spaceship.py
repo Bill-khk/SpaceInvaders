@@ -3,6 +3,8 @@ import turtle
 from turtle import Turtle
 import random
 
+active_missiles = []
+active_gifts = []
 
 class Spaceship(Turtle):
     spaceship_url = 'gif/vessel.gif'
@@ -66,6 +68,7 @@ class Spaceship(Turtle):
 class Missile(Turtle):
     def __init__(self, vessel, x_offset):
         super().__init__()
+        active_missiles.append(self)
         self.shape('classic')
         self.setheading(90)
         self.penup()
@@ -80,12 +83,12 @@ class Missile(Turtle):
     def move(self):
         if self.ycor() < 450:  # Top of screen limit
             self.forward(20)
-            turtle.ontimer(self.move, 50)  # Automatically call move every 50ms
         else:
             self.hideturtle()
             self.exist = False
+            if self in active_missiles:
+                active_missiles.remove(self)
         self.check_hit()
-        self.vessel.screen.update()
 
     def check_hit(self):
         if self.exist:
@@ -113,6 +116,7 @@ class Gift(Turtle):
 
     def __init__(self, vessel, invader):
         super().__init__()
+        active_gifts.append(self)
         self.penup()
         self.teleport(0, 0)
         self.teleport(x=invader.xcor(), y=invader.ycor())
@@ -124,15 +128,14 @@ class Gift(Turtle):
 
     def move(self):
         if self.ycor() > -450:  # Bop of screen limit
-            self.forward(20)
+            self.forward(10)
             self.check_pickup()
-            turtle.ontimer(self.move, 100)  # Automatically call move every 50ms
         else:
             print('Lost gift')
             self.hideturtle()
             self.exist = False
-
-        self.vessel.screen.update()
+            if self in active_gifts:
+                active_gifts.remove(self)
 
     def check_pickup(self):
         if self.exist:

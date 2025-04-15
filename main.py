@@ -2,7 +2,7 @@ import time
 import turtle
 from turtle import Screen, Turtle
 from PIL import Image
-from spaceship import Spaceship
+from spaceship import Spaceship, active_gifts, active_missiles
 from invader import Bug, Spider, Dragon
 
 screen = Screen()
@@ -22,7 +22,10 @@ def resize(URL):
 
 monster_list = []
 
-
+# TODO implement other type of monster and other behavior
+# TODO detect when the game is over
+# TODO implement difficulty level
+# TODO manage vessel life
 def spawn_monsters(row=3, col=7):
     y_origin = 350
     for i in range(row):
@@ -34,11 +37,22 @@ def spawn_monsters(row=3, col=7):
     screen.update()
 
 
+def game_loop():
+    for missile in active_missiles[:]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
+        missile.move()
+
+    for gift in active_gifts[:]:
+        gift.move()
+
+    screen.update()
+    screen.ontimer(game_loop, 50)  # run every 50ms
+
+
 vessel = Spaceship(screen, monster_list)
 spawn_monsters()
 screen.listen()
 screen.onkey(vessel.move_Right, 'Right')
 screen.onkey(vessel.move_Left, 'Left')
 
-# screen.update()
+game_loop()
 screen.mainloop()
