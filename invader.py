@@ -1,5 +1,8 @@
 from turtle import Turtle
 import turtle
+import random
+
+active_monsters = []
 
 class Invader(Turtle):
     bug_url = 'gif/bug.gif'
@@ -19,16 +22,38 @@ class Invader(Turtle):
         self.teleport(x=x, y=y)
         # Game parameters
         self.life = 0
+        self.exist = True
+        self.doing_action = False
+        self.rate = 1000
 
-    def move_Suicide(self):
-        pass
+# TODO Correct those methode
+    def behave(self):
+        print('I do something')
 
+    def behavior(self):
+        if not self.doing_action:
+            luck = random.randint(1, 20)
+            if luck % self.rate == 0:
+                print('Behave !')
+                self.behave()
+                self.doing_action = True
 
 class Bug(Invader):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.shape(self.bug_url)
         self.life = 100
+        self.rate = 5
+
+    def behave(self):
+        if self.ycor() > -450:  # Bop of screen limit
+            self.forward(10)
+        else:
+            print('Pass over')
+            self.hideturtle()
+            self.exist = False
+            self.doing_action = False
+
 
 class Dragon(Invader):
     def __init__(self, x, y):

@@ -18,7 +18,7 @@ class Spaceship(Turtle):
         self.penup()
         self.speed(0)
         # Characteristics
-        self.speed = 40
+        self.speed = 30
         self.power = 20
         self.missile = 1
         # Game
@@ -30,12 +30,12 @@ class Spaceship(Turtle):
 
     def move_Right(self):
         self.setheading(0)
-        self.forward(40)
+        self.forward(20)
         self.screen.update()
 
     def move_Left(self):
         self.setheading(180)
-        self.forward(40)
+        self.forward(20)
         self.screen.update()
 
     def upgrade_weapon(self):
@@ -46,7 +46,7 @@ class Spaceship(Turtle):
 
     def auto_shoot(self):
         if self.shooting:
-            spacing = 20  # pixels between missiles
+            spacing = 15  # pixels between missiles
             total_missiles = self.missile
             offset = (total_missiles - 1) / 2 * spacing
             # Ex:
