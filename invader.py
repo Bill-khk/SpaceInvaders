@@ -4,6 +4,7 @@ import random
 
 active_monsters = []
 
+
 class Invader(Turtle):
     bug_url = 'gif/bug.gif'
     turtle.register_shape(bug_url)
@@ -11,7 +12,6 @@ class Invader(Turtle):
     turtle.register_shape(dragon_url)
     spider_url = 'gif/spider.gif'
     turtle.register_shape(spider_url)
-
 
     def __init__(self, x, y):
         super().__init__()
@@ -23,27 +23,30 @@ class Invader(Turtle):
         # Game parameters
         self.life = 0
         self.exist = True
-        self.doing_action = False
         self.rate = 1000
 
-# TODO Correct those methode
+    # TODO Correct those methode
     def behave(self):
         print('I do something')
 
-    def behavior(self):
-        if not self.doing_action:
-            luck = random.randint(1, 20)
-            if luck % self.rate == 0:
+    def roll_action(self):
+        monster_lim = 2
+        luck = random.randint(1, 10000)
+        if luck % self.rate == 0:
+            if len(active_monsters) < monster_lim:
                 print('Behave !')
+                active_monsters.append(self)
                 self.behave()
-                self.doing_action = True
+            else:
+                print('To many monster moving already')
+
 
 class Bug(Invader):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.shape(self.bug_url)
         self.life = 100
-        self.rate = 5
+        self.rate = 2500
 
     def behave(self):
         if self.ycor() > -450:  # Bop of screen limit
@@ -52,7 +55,7 @@ class Bug(Invader):
             print('Pass over')
             self.hideturtle()
             self.exist = False
-            self.doing_action = False
+            active_monsters.remove(self)
 
 
 class Dragon(Invader):
@@ -61,9 +64,9 @@ class Dragon(Invader):
         self.shape(self.dragon_url)
         self.life = 40
 
+
 class Spider(Invader):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.shape(self.spider_url)
         self.life = 60
-

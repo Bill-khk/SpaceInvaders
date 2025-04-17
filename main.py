@@ -48,10 +48,11 @@ def game_loop(ship):
     for gift in active_gifts[:]:
         gift.move()
 
-    # TODO to correct
+    for monster in monster_list:
+        monster.roll_action()
+
     for monster in active_monsters[:]:
-        pass
-        # monster.random_()
+        monster.behave()
         # check_collision(ship, monster)
 
     screen.update()
