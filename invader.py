@@ -41,7 +41,7 @@ class Invader(Turtle):
                 print('To many monster moving already')
 
 
-class Bug(Invader):
+class Ant(Invader):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.shape(self.bug_url)

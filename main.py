@@ -3,7 +3,7 @@ import turtle
 from turtle import Screen, Turtle
 from PIL import Image
 from spaceship import Spaceship, active_gifts, active_missiles
-from invader import Bug, Spider, Dragon, active_monsters
+from invader import Ant, Spider, Dragon, active_monsters
 
 screen = Screen()
 screen.setup(width=600, height=900)
@@ -32,7 +32,7 @@ def spawn_monsters(level, row=3, col=7):
     for i in range(row):
         x_origin = -250
         for y in range(col):
-            monster_list.append(Bug(x_origin, y_origin))
+            monster_list.append(Ant(x_origin, y_origin))
             x_origin += 80
         y_origin -= 70
     screen.update()
