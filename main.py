@@ -41,6 +41,28 @@ def check_collision(ship, monster):
     if monster.xcor() + 20 >= ship.xcor() >= monster.xcor() - 20 and monster.ycor() + 20 >= ship.ycor() >= monster.ycor() - 20:
         print('Collision')
 
+def update_life(screen, vessel):
+    screen_anchor = (290, 420)
+    offset = 45
+
+    life_url = 'gif/life.gif'
+    turtle.register_shape(life_url)
+    shield_url = 'gif/shield_life.gif'
+    turtle.register_shape(shield_url)
+
+    for i in range(1, vessel.life+1):
+        life_icon = Turtle()
+        life_icon.penup()
+        life_icon.shape(life_url)
+        life_icon.teleport(screen_anchor[0] - offset*i, screen_anchor[1])
+
+    if vessel.extra_life:
+        shield_icon = Turtle()
+        shield_icon.penup()
+        shield_icon.shape(shield_url)
+        shield_icon.teleport(screen_anchor[0] - offset*(vessel.life+1), screen_anchor[1])
+
+
 def game_loop(ship):
     for missile in active_missiles[:]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
         missile.move()
@@ -61,6 +83,7 @@ def game_loop(ship):
 
 vessel = Spaceship(screen, monster_list)
 spawn_monsters(level)
+update_life(screen,vessel)
 screen.listen()
 screen.onkey(vessel.move_Right, 'Right')
 screen.onkey(vessel.move_Left, 'Left')
