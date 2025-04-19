@@ -21,9 +21,9 @@ def resize(URL):
 
 
 monster_list = []
+active_life = []
 level = 1
 
-# TODO implement other type of monster and other behavior
 # TODO detect when the game is over
 # TODO implement difficulty level
 # TODO manage vessel life
@@ -37,11 +37,21 @@ def spawn_monsters(level, row=3, col=7):
         y_origin -= 70
     screen.update()
 
-def check_collision(ship, monster):
-    if monster.xcor() + 20 >= ship.xcor() >= monster.xcor() - 20 and monster.ycor() + 20 >= ship.ycor() >= monster.ycor() - 20:
-        print('Collision')
 
-def update_life(screen, vessel):
+def check_collision(ship, monster):
+    if monster.exist:
+        if monster.xcor() + 20 >= ship.xcor() >= monster.xcor() - 20 and monster.ycor() + 20 >= ship.ycor() >= monster.ycor() - 20:
+            print('Collision')
+            monster.exist = False
+            monster.hideturtle()
+            monster.teleport(1000, 1000)
+            active_monsters.remove(monster)
+            ship.life -= 1
+            print(ship.life)
+            update_life(ship)
+
+
+def update_life(vessel):
     screen_anchor = (290, 420)
     offset = 45
 
@@ -49,22 +59,28 @@ def update_life(screen, vessel):
     turtle.register_shape(life_url)
     shield_url = 'gif/shield_life.gif'
     turtle.register_shape(shield_url)
+    for i in active_life:
+        i.hideturtle()
 
-    for i in range(1, vessel.life+1):
+    for i in range(1, vessel.life + 1):
+        print(i)
         life_icon = Turtle()
         life_icon.penup()
         life_icon.shape(life_url)
-        life_icon.teleport(screen_anchor[0] - offset*i, screen_anchor[1])
+        life_icon.teleport(screen_anchor[0] - offset * i, screen_anchor[1])
+        active_life.append(life_icon)
 
     if vessel.extra_life:
         shield_icon = Turtle()
         shield_icon.penup()
         shield_icon.shape(shield_url)
-        shield_icon.teleport(screen_anchor[0] - offset*(vessel.life+1), screen_anchor[1])
+        shield_icon.teleport(screen_anchor[0] - offset * (vessel.life + 1), screen_anchor[1])
+        active_life.append(shield_icon)
 
 
 def game_loop(ship):
-    for missile in active_missiles[:]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
+    for missile in active_missiles[
+                   :]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
         missile.move()
 
     for gift in active_gifts[:]:
@@ -75,7 +91,7 @@ def game_loop(ship):
 
     for monster in active_monsters[:]:
         monster.behave()
-        # check_collision(ship, monster)
+        check_collision(ship, monster)
 
     screen.update()
     screen.ontimer(lambda: game_loop(ship), 50)  # run every 50ms
@@ -83,7 +99,7 @@ def game_loop(ship):
 
 vessel = Spaceship(screen, monster_list)
 spawn_monsters(level)
-update_life(screen,vessel)
+update_life(vessel)
 screen.listen()
 screen.onkey(vessel.move_Right, 'Right')
 screen.onkey(vessel.move_Left, 'Left')

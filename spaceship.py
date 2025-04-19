@@ -22,7 +22,7 @@ class Spaceship(Turtle):
         self.power = 20
         self.missile = 1
         self.life = 3
-        self.extra_life = True
+        self.extra_life = False
         # Game
         self.screen = screen
         self.shooting = True
@@ -63,7 +63,7 @@ class Spaceship(Turtle):
                 # x_offset 2 missiles = 0-10 = -10, 20-10 = 10
 
                 Missile(self, x_offset)
-        turtle.ontimer(self.auto_shoot, 400)
+        turtle.ontimer(self.auto_shoot, 600)
         self.screen.update()
 
 
@@ -106,8 +106,8 @@ class Missile(Turtle):
                         invader.teleport(1000, 1000)
 
     def random_drop(self, invader):
-        luck = random.randint(1, 10)
-        if luck % 2 == 0:
+        luck = random.randint(1, 100)
+        if luck % 10 == 0:
             print('Gift')
             Gift(self.vessel, invader)
 

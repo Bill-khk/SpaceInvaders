@@ -25,7 +25,6 @@ class Invader(Turtle):
         self.exist = True
         self.rate = 1000
 
-    # TODO Correct those methode
     def behave(self):
         print('I do something')
 
@@ -34,7 +33,7 @@ class Invader(Turtle):
         luck = random.randint(1, 10000)
         if luck % self.rate == 0:
             if len(active_monsters) < monster_lim:
-                print('Behave !')
+                # print('Behave !')
                 active_monsters.append(self)
                 self.behave()
             else:
@@ -46,7 +45,7 @@ class Ant(Invader):
         super().__init__(x, y)
         self.shape(self.bug_url)
         self.life = 100
-        self.rate = 2500
+        self.rate = 1000
 
     def behave(self):
         if self.ycor() > -450:  # Bop of screen limit
