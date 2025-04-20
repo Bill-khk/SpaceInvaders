@@ -4,6 +4,8 @@ from turtle import Screen, Turtle
 from PIL import Image
 from spaceship import Spaceship, active_gifts, active_missiles
 from invader import Ant, Spider, Dragon, active_monsters
+from tkinter import messagebox
+
 
 screen = Screen()
 screen.setup(width=600, height=900)
@@ -24,6 +26,7 @@ monster_list = []
 active_life = []
 level = 1
 
+# TODO correct the "to many monster moving already state"
 # TODO detect when the game is over
 # TODO implement difficulty level
 # TODO manage vessel life
@@ -77,6 +80,18 @@ def update_life(vessel):
         shield_icon.teleport(screen_anchor[0] - offset * (vessel.life + 1), screen_anchor[1])
         active_life.append(shield_icon)
 
+def check_game(screen, vessel):
+    if vessel.life == 0:
+        vessel.shooting = False
+
+        if messagebox.askokcancel("Game over", "Want to continue?"):
+            print('Restart the game')
+            #TODO
+        else:
+            return True
+    else:
+        return False
+
 
 def game_loop(ship):
     for missile in active_missiles[
@@ -92,6 +107,9 @@ def game_loop(ship):
     for monster in active_monsters[:]:
         monster.behave()
         check_collision(ship, monster)
+
+    if check_game(screen, vessel):
+        turtle.bye()
 
     screen.update()
     screen.ontimer(lambda: game_loop(ship), 50)  # run every 50ms
