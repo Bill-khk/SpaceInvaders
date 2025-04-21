@@ -33,7 +33,7 @@ class Invader(Turtle):
         luck = random.randint(1, 10000)
         if luck % self.rate == 0:
             if len(active_monsters) < monster_lim:
-                # print('Behave !')
+                print('Behave !')
                 active_monsters.append(self)
                 self.behave()
             else:

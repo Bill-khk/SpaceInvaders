@@ -21,7 +21,7 @@ class Spaceship(Turtle):
         self.speed = 30
         self.power = 20
         self.missile = 1
-        self.life = 3
+        self.life = 1
         self.extra_life = False
         # Game
         self.screen = screen

@@ -6,7 +6,6 @@ from spaceship import Spaceship, active_gifts, active_missiles
 from invader import Ant, Spider, Dragon, active_monsters
 from tkinter import messagebox
 
-
 screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  #Can be used with screen.update to increase the code speed
@@ -25,12 +24,16 @@ def resize(URL):
 monster_list = []
 active_life = []
 level = 1
+vessel = None
+game_on = False
+
 
 # TODO correct the "to many monster moving already state"
 # TODO detect when the game is over
 # TODO implement difficulty level
 # TODO manage vessel life
 def spawn_monsters(level, row=3, col=7):
+    active_monsters = []
     y_origin = 350
     for i in range(row):
         x_origin = -250
@@ -41,20 +44,21 @@ def spawn_monsters(level, row=3, col=7):
     screen.update()
 
 
-def check_collision(ship, monster):
+def check_collision(monster):
+    global vessel
     if monster.exist:
-        if monster.xcor() + 20 >= ship.xcor() >= monster.xcor() - 20 and monster.ycor() + 20 >= ship.ycor() >= monster.ycor() - 20:
+        if monster.xcor() + 20 >= vessel.xcor() >= monster.xcor() - 20 and monster.ycor() + 20 >= vessel.ycor() >= monster.ycor() - 20:
             print('Collision')
             monster.exist = False
             monster.hideturtle()
             monster.teleport(1000, 1000)
             active_monsters.remove(monster)
-            ship.life -= 1
-            print(ship.life)
-            update_life(ship)
+            vessel.life -= 1
+            update_life()
 
 
-def update_life(vessel):
+def update_life():
+    global vessel
     screen_anchor = (290, 420)
     offset = 45
 
@@ -66,7 +70,6 @@ def update_life(vessel):
         i.hideturtle()
 
     for i in range(1, vessel.life + 1):
-        print(i)
         life_icon = Turtle()
         life_icon.penup()
         life_icon.shape(life_url)
@@ -80,20 +83,24 @@ def update_life(vessel):
         shield_icon.teleport(screen_anchor[0] - offset * (vessel.life + 1), screen_anchor[1])
         active_life.append(shield_icon)
 
-def check_game(screen, vessel):
+
+def check_game():  # Used to check if the vessel still have lives\
+    global vessel, game_on
     if vessel.life == 0:
-        vessel.shooting = False
+        #vessel.shooting = False
 
         if messagebox.askokcancel("Game over", "Want to continue?"):
-            print('Restart the game')
-            #TODO
+            game_on = False
+            end_game()
+            game_again()
         else:
             return True
     else:
         return False
 
 
-def game_loop(ship):
+def game_loop():
+    global vessel, game_on
     for missile in active_missiles[
                    :]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
         missile.move()
@@ -106,21 +113,60 @@ def game_loop(ship):
 
     for monster in active_monsters[:]:
         monster.behave()
-        check_collision(ship, monster)
+        check_collision(monster)
 
-    if check_game(screen, vessel):
+    if check_game():
         turtle.bye()
 
     screen.update()
-    screen.ontimer(lambda: game_loop(ship), 50)  # run every 50ms
+    if game_on:
+        screen.ontimer(lambda: game_loop(), 50)  # run every 50ms
 
 
-vessel = Spaceship(screen, monster_list)
-spawn_monsters(level)
-update_life(vessel)
-screen.listen()
-screen.onkey(vessel.move_Right, 'Right')
-screen.onkey(vessel.move_Left, 'Left')
+def game():
+    global vessel, game_on
+    game_on = True
+    vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
+    screen.listen()
+    screen.onkey(vessel.move_Right, 'Right')
+    screen.onkey(vessel.move_Left, 'Left')
+    spawn_monsters(level)
+    update_life()
+    game_loop()
+    screen.mainloop()
 
-game_loop(vessel)
-screen.mainloop()
+def game_again():
+    global vessel, game_on
+    game_on = True
+    vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
+    screen.listen()
+    screen.onkey(vessel.move_Right, 'Right')
+    screen.onkey(vessel.move_Left, 'Left')
+    spawn_monsters(level)
+    update_life()
+    game_loop()
+    screen.mainloop()
+
+def end_game():
+    global monster_list, active_life, level, active_monsters
+    for monster in monster_list:
+        monster.hideturtle()
+        monster.teleport(1000, 1000)
+    monster_list = []
+
+    for missile in active_missiles:
+        missile.hideturtle()
+        missile.teleport(1000, 1000)
+
+    for gift in active_gifts:
+        gift.hideturtle()
+        gift.teleport(1000, 1000)
+
+    vessel.hideturtle()
+    vessel.teleport(1000, 1000)
+
+    active_monsters = []
+    active_life = []
+    level = 1
+
+game()
