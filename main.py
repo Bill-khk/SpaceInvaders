@@ -28,10 +28,8 @@ vessel = None
 game_on = False
 
 
-# TODO correct the "to many monster moving already state"
-# TODO detect when the game is over
 # TODO implement difficulty level
-# TODO manage vessel life
+
 def spawn_monsters(level, row=3, col=7):
     global active_monsters
     active_monsters.clear()
