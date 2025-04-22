@@ -33,7 +33,8 @@ game_on = False
 # TODO implement difficulty level
 # TODO manage vessel life
 def spawn_monsters(level, row=3, col=7):
-    active_monsters = []
+    global active_monsters
+    active_monsters.clear()
     y_origin = 350
     for i in range(row):
         x_origin = -250
@@ -92,7 +93,7 @@ def check_game():  # Used to check if the vessel still have lives\
         if messagebox.askokcancel("Game over", "Want to continue?"):
             game_on = False
             end_game()
-            game_again()
+            game()
         else:
             return True
     else:
@@ -135,24 +136,13 @@ def game():
     game_loop()
     screen.mainloop()
 
-def game_again():
-    global vessel, game_on
-    game_on = True
-    vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
-    screen.listen()
-    screen.onkey(vessel.move_Right, 'Right')
-    screen.onkey(vessel.move_Left, 'Left')
-    spawn_monsters(level)
-    update_life()
-    game_loop()
-    screen.mainloop()
 
 def end_game():
     global monster_list, active_life, level, active_monsters
     for monster in monster_list:
         monster.hideturtle()
         monster.teleport(1000, 1000)
-    monster_list = []
+    monster_list.clear()
 
     for missile in active_missiles:
         missile.hideturtle()
@@ -165,8 +155,9 @@ def end_game():
     vessel.hideturtle()
     vessel.teleport(1000, 1000)
 
-    active_monsters = []
-    active_life = []
+    active_monsters.clear()
+    active_life.clear()
     level = 1
+
 
 game()

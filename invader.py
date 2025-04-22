@@ -54,7 +54,8 @@ class Ant(Invader):
             print('Pass over')
             self.hideturtle()
             self.exist = False
-            active_monsters.remove(self)
+            if self in active_monsters:
+                active_monsters.remove(self)
 
 
 class Dragon(Invader):
