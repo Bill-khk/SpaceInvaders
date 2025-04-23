@@ -1,3 +1,4 @@
+import random
 import time
 import turtle
 from turtle import Screen, Turtle
@@ -28,7 +29,9 @@ vessel = None
 game_on = False
 
 
-# TODO implement difficulty level
+# TODO fix : check how monster list is decremented
+# TODO fix : check the list of active monsters
+# TODO implement other invaders
 
 def spawn_monsters(level, row=3, col=7):
     global active_monsters
@@ -37,7 +40,11 @@ def spawn_monsters(level, row=3, col=7):
     for i in range(row):
         x_origin = -250
         for y in range(col):
-            monster_list.append(Ant(x_origin, y_origin))
+            spawn_dice = random.randint(1, 10)  # Use to randomly generate monster
+            spawn_dice += level
+            print(f'dice:{spawn_dice}')
+            if spawn_dice >= (5+row):
+                monster_list.append(Ant(x_origin, y_origin))
             x_origin += 80
         y_origin -= 70
     screen.update()
@@ -83,17 +90,22 @@ def update_life():
         active_life.append(shield_icon)
 
 
-def check_game():  # Used to check if the vessel still have lives\
-    global vessel, game_on
-    if vessel.life == 0:
+def check_game():
+    global vessel, game_on, level
+    if vessel.life == 0:  # Used to check if the vessel still have lives
         #vessel.shooting = False
 
         if messagebox.askokcancel("Game over", "Want to continue?"):
             game_on = False
             end_game()
-            game()
+            run_game()
         else:
             return True
+    elif len(monster_list) == 0:
+        messagebox.showinfo(title='Level done', message="Going to the next level !", )
+        level += 1
+        end_game()
+        run_game()
     else:
         return False
 
@@ -122,7 +134,7 @@ def game_loop():
         screen.ontimer(lambda: game_loop(), 50)  # run every 50ms
 
 
-def game():
+def run_game():
     global vessel, game_on
     game_on = True
     vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
@@ -158,4 +170,4 @@ def end_game():
     level = 1
 
 
-game()
+run_game()
