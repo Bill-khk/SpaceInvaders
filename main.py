@@ -29,7 +29,7 @@ vessel = None
 game_on = False
 
 
-# TODO fix : check how monster list is decremented
+# TODO fix : Keep the number of missile from level to level
 # TODO fix : check the list of active monsters
 # TODO implement other invaders
 
@@ -42,8 +42,8 @@ def spawn_monsters(level, row=3, col=7):
         for y in range(col):
             spawn_dice = random.randint(1, 10)  # Use to randomly generate monster
             spawn_dice += level
-            print(f'dice:{spawn_dice}')
-            if spawn_dice >= (5+row):
+            #print(f'dice:{spawn_dice}')
+            if spawn_dice >= (6 + row):
                 monster_list.append(Ant(x_origin, y_origin))
             x_origin += 80
         y_origin -= 70
@@ -61,6 +61,11 @@ def check_collision(monster):
             active_monsters.remove(monster)
             vessel.life -= 1
             update_life()
+            return True
+        else:
+            return False
+    else:
+        return False
 
 
 def update_life():
@@ -110,21 +115,39 @@ def check_game():
         return False
 
 
+def check_missile_hit(monster):
+    for missile in active_missiles:
+        if missile.exist:
+            if monster.xcor() + 20 >= missile.xcor() >= monster.xcor() - 20 and missile.ycor() >= monster.ycor() - 20:
+                missile.exist = False
+                missile.hideturtle()
+                monster.life -= missile.vessel.power
+                if monster.life <= 0:
+                    print('Invader destroyed')
+                    monster_list.remove(monster)
+                    monster.hideturtle()
+                    missile.random_drop(monster)
+                    monster.teleport(1000, 1000)
+
+
 def game_loop():
     global vessel, game_on
     for missile in active_missiles[
                    :]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
         missile.move()
+        #check_missile_hit(missile, monster_list)
 
     for gift in active_gifts[:]:
         gift.move()
 
     for monster in monster_list:
         monster.roll_action()
+        check_missile_hit(monster)
 
     for monster in active_monsters[:]:
         monster.behave()
-        check_collision(monster)
+        if check_collision(monster):
+            monster_list.remove(monster)
 
     if check_game():
         turtle.bye()

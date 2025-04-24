@@ -90,7 +90,7 @@ class Missile(Turtle):
             self.exist = False
             if self in active_missiles:
                 active_missiles.remove(self)
-        self.check_hit()
+        #self.check_hit()
 
     def check_hit(self):
         if self.exist:
@@ -104,6 +104,7 @@ class Missile(Turtle):
                         invader.hideturtle()
                         self.random_drop(invader)
                         invader.teleport(1000, 1000)
+                        return True
 
     def random_drop(self, invader):
         luck = random.randint(1, 100)
