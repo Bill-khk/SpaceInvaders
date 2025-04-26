@@ -38,6 +38,7 @@ class Invader(Turtle):
                 self.behave()
             else:
                 print('To many monster moving already')
+            print(f'number of active monster :{len(active_monsters)}')
 
 
 class Ant(Invader):
@@ -56,6 +57,9 @@ class Ant(Invader):
             self.exist = False
             if self in active_monsters:
                 active_monsters.remove(self)
+                # TODO need to remove the monster from the monster_list
+            print(f'number of active monster :{len(active_monsters)}')
+
 
 
 class Dragon(Invader):

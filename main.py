@@ -123,7 +123,7 @@ def check_missile_hit(monster):
                 missile.hideturtle()
                 monster.life -= missile.vessel.power
                 if monster.life <= 0:
-                    print('Invader destroyed')
+                    print(f'Invader destroyed - {len(monster_list)}')
                     monster_list.remove(monster)
                     monster.hideturtle()
                     missile.random_drop(monster)
@@ -161,6 +161,11 @@ def run_game():
     global vessel, game_on
     game_on = True
     vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
+    print(f'new game:\n'
+          f'current vessel missile :{vessel.missile}\n'
+          f'active monster: {active_monsters}\n'
+          f'active gift {active_gifts}\n'
+          f'monster list {monster_list}')
     screen.listen()
     screen.onkey(vessel.move_Right, 'Right')
     screen.onkey(vessel.move_Left, 'Left')
