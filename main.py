@@ -181,7 +181,7 @@ def print_game():
           f'active gift {active_gifts}\n'
           f'monster list {monster_list}')
 
-
+# Function used only when resetting the game
 def end_game():
     global monster_list, active_life, level, active_monsters
     for monster in monster_list:
@@ -202,7 +202,7 @@ def end_game():
 
     active_monsters.clear()
     active_life.clear()
-    level = 1  # ???
+    level = 1
 
 
 run_game()
