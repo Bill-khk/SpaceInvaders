@@ -28,23 +28,24 @@ level = 1
 vessel = None
 game_on = False
 
-
-# TODO fix : Keep the number of missile from level to level
-# TODO fix : check the list of active monsters
-# TODO implement other invaders
-
-def spawn_monsters(level, row=3, col=7):
-    global active_monsters
+def spawn_monsters(level, row=1, col=7):
+    global active_monsters, monster_list
     active_monsters.clear()
+    monster_list.clear()
     y_origin = 350
+    if level % 3 == 0:
+        row = + 1
     for i in range(row):
         x_origin = -250
         for y in range(col):
-            spawn_dice = random.randint(1, 10)  # Use to randomly generate monster
-            spawn_dice += level
-            #print(f'dice:{spawn_dice}')
-            if spawn_dice >= (6 + row):
-                monster_list.append(Ant(x_origin, y_origin))
+            if level < 2:
+                monster = Ant(x_origin, y_origin)
+            elif level < 4:
+                monster = random.choice([Ant(x_origin, y_origin), Spider(x_origin, y_origin)])
+            else:
+                monster = random.choice(
+                    [Ant(x_origin, y_origin), Spider(x_origin, y_origin), Dragon(x_origin, y_origin)])
+            monster_list.append(monster)
             x_origin += 80
         y_origin -= 70
     screen.update()
@@ -109,8 +110,9 @@ def check_game():
     elif len(monster_list) == 0:
         messagebox.showinfo(title='Level done', message="Going to the next level !", )
         level += 1
-        end_game()
-        run_game()
+        # end_game()
+        #run_game()
+        spawn_monsters(level)
     else:
         return False
 
@@ -145,7 +147,8 @@ def game_loop():
         check_missile_hit(monster)
 
     for monster in active_monsters[:]:
-        monster.behave()
+        if monster.behave():
+            monster_list.remove(monster)
         if check_collision(monster):
             monster_list.remove(monster)
 
@@ -161,11 +164,7 @@ def run_game():
     global vessel, game_on
     game_on = True
     vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
-    print(f'new game:\n'
-          f'current vessel missile :{vessel.missile}\n'
-          f'active monster: {active_monsters}\n'
-          f'active gift {active_gifts}\n'
-          f'monster list {monster_list}')
+    print_game()  # Check game state
     screen.listen()
     screen.onkey(vessel.move_Right, 'Right')
     screen.onkey(vessel.move_Left, 'Left')
@@ -173,6 +172,14 @@ def run_game():
     update_life()
     game_loop()
     screen.mainloop()
+
+
+def print_game():
+    print(f'new game:\n'
+          f'current vessel missile :{vessel.missile}\n'
+          f'active monster: {active_monsters}\n'
+          f'active gift {active_gifts}\n'
+          f'monster list {monster_list}')
 
 
 def end_game():
@@ -195,7 +202,7 @@ def end_game():
 
     active_monsters.clear()
     active_life.clear()
-    level = 1
+    level = 1  # ???
 
 
 run_game()

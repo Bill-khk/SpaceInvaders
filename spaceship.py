@@ -91,25 +91,7 @@ class Missile(Turtle):
             self.exist = False
             if self in active_missiles:
                 active_missiles.remove(self)
-        #self.check_hit()
 
-    # Function has been moved in Main.py
-    # def check_hit(self):
-    #     if self.exist:
-    #         for invader in self.vessel.invaders:
-    #             if invader.xcor() + 20 >= self.xcor() >= invader.xcor() - 20 and self.ycor() >= invader.ycor() - 20:
-    #                 self.exist = False
-    #                 self.hideturtle()
-    #                 invader.life -= self.vessel.power
-    #                 if invader.life <= 0:
-    #                     print(f'Invader destroyed - {self.vessel.invader}')
-    #                     invader.hideturtle()
-    #                     self.random_drop(invader)
-    #                     invader.teleport(1000, 1000)
-    #                     if invader in active_monsters:
-    #                         active_monsters.remove(invader)
-    #                         print(f'number of active monster :{len(active_monsters)}')
-    #                     return True
 
     def random_drop(self, invader):
         luck = random.randint(1, 100)
@@ -136,7 +118,7 @@ class Gift(Turtle):
 
     def move(self):
         print('Gift moving')
-        if self.ycor() > -450:  # Bop of screen limit
+        if self.ycor() > -400:  # Bop of screen limit
             self.forward(10)
             self.check_pickup()
         else:
