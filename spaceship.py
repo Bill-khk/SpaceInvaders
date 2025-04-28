@@ -132,6 +132,7 @@ class Gift(Turtle):
         if self.exist:
             if self.vessel.xcor() + 30 >= self.xcor() >= self.vessel.xcor() - 30 and self.ycor() <= self.vessel.ycor() + 20:
                 # print(f'picked up : {self.vessel.xcor() + 20} >= {self.xcor()} >= {self.vessel.xcor() - 20} and {self.ycor()} <= {self.vessel.ycor() + 20}')
+                self.exist = False
                 self.hideturtle()
                 self.teleport(1000, 1000)
                 self.vessel.upgrade_weapon()

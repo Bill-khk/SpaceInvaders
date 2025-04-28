@@ -39,15 +39,15 @@ class Invader(Turtle):
     def roll_action(self):
         # TODO Change to make a monster roll every two second
         monster_lim = 2
-        luck = random.randint(1, 10000)
-        if luck % self.rate == 0:
-            if len(active_monsters) < monster_lim:
-                print('Behave !')
-                active_monsters.append(self)
-                self.behave()
-            else:
-                print('To many monster moving already')
-            print(f'number of active monster :{len(active_monsters)}')
+        # luck = random.randint(1, 10000)
+        # if luck % self.rate == 0:
+        if len(active_monsters) < monster_lim:
+            print('Behave !')
+            active_monsters.append(self)
+            self.behave()
+        else:
+            print('To many monster moving already')
+        print(f'number of active monster :{len(active_monsters)}')
 
 
 class Ant(Invader):

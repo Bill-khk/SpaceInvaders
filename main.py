@@ -27,6 +27,8 @@ active_life = []
 level = 1
 vessel = None
 game_on = False
+start_time = time.time()  # Used in the main loop, to activate a monster every two sec
+last_behave = 0  # Used to know last time we activate a monster behavior
 
 def spawn_monsters(level, row=1, col=7):
     global active_monsters, monster_list
@@ -133,7 +135,8 @@ def check_missile_hit(monster):
 
 
 def game_loop():
-    global vessel, game_on
+    global vessel, game_on, last_behave
+    timelapse = round(time.time() - start_time, 0)
     for missile in active_missiles[
                    :]:  # [:] means loop over a copy of the list active_missiles - avoid weird behavior or even a crash, because you're modifying the list while looping over it.
         missile.move()
@@ -142,8 +145,12 @@ def game_loop():
     for gift in active_gifts[:]:
         gift.move()
 
-    for monster in monster_list:
+    if timelapse % 5 == 0 and timelapse != last_behave:
+        last_behave = timelapse
+        monster = random.choice(monster_list)
         monster.roll_action()
+
+    for monster in monster_list:
         check_missile_hit(monster)
 
     for monster in active_monsters[:]:
@@ -180,6 +187,7 @@ def print_game():
           f'active monster: {active_monsters}\n'
           f'active gift {active_gifts}\n'
           f'monster list {monster_list}')
+
 
 # Function used only when resetting the game
 def end_game():
