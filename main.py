@@ -9,7 +9,7 @@ from tkinter import messagebox
 
 screen = Screen()
 screen.setup(width=600, height=900)
-screen.tracer(0)  #Can be used with screen.update to increase the code speed
+screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
 
 # Used to create small version of PNG icon
@@ -25,13 +25,14 @@ def resize(URL):
 monster_list = []
 active_life = []
 level = 1
-vessel = None
+vessel: [Spaceship] = None
 game_on = False
 start_time = time.time()  # Used in the main loop, to activate a monster every two sec
 last_behave = 0  # Used to know last time we activate a monster behavior
 
+
 def spawn_monsters(level, row=1, col=7):
-    global active_monsters, monster_list
+    global monster_list
     active_monsters.clear()
     monster_list.clear()
     y_origin = 350
@@ -41,12 +42,12 @@ def spawn_monsters(level, row=1, col=7):
         x_origin = -250
         for y in range(col):
             if level < 2:
-                monster = Ant(x_origin, y_origin)
+                monster_class = random.choice([Ant])
             elif level < 4:
-                monster = random.choice([Ant(x_origin, y_origin), Spider(x_origin, y_origin)])
+                monster_class = random.choice([Ant, Spider])
             else:
-                monster = random.choice(
-                    [Ant(x_origin, y_origin), Spider(x_origin, y_origin), Dragon(x_origin, y_origin)])
+                monster_class = random.choice([Ant, Spider, Dragon])
+            monster = monster_class(x_origin, y_origin)
             monster_list.append(monster)
             x_origin += 80
         y_origin -= 70
@@ -115,6 +116,7 @@ def check_game():
         # end_game()
         #run_game()
         spawn_monsters(level)
+        return False
     else:
         return False
 
@@ -135,6 +137,52 @@ def check_missile_hit(monster):
                         monster.hideturtle()
                         missile.random_drop(monster)
                         monster.teleport(1000, 1000)
+
+
+def run_game():
+    global vessel, game_on
+    game_on = True
+    vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
+    print_game()  # Check game state
+    screen.listen()
+    screen.onkey(vessel.move_Right, 'Right')
+    screen.onkey(vessel.move_Left, 'Left')
+    spawn_monsters(level)
+    update_life()
+    game_loop()
+    screen.mainloop()
+
+
+def print_game():
+    print(f'new game:\n'
+          f'current vessel missile :{vessel.missile}\n'
+          f'active monster: {active_monsters}\n'
+          f'active gift {active_gifts}\n'
+          f'monster list {monster_list}')
+
+
+# Function used only when resetting the game
+def end_game():
+    global monster_list, active_life, level
+    for monster in monster_list:
+        monster.hideturtle()
+        monster.teleport(1000, 1000)
+    monster_list.clear()
+
+    for missile in active_missiles:
+        missile.hideturtle()
+        missile.teleport(1000, 1000)
+
+    for gift in active_gifts:
+        gift.hideturtle()
+        gift.teleport(1000, 1000)
+
+    vessel.hideturtle()
+    vessel.teleport(1000, 1000)
+
+    active_monsters.clear()
+    active_life.clear()
+    level = 1
 
 
 def game_loop():
@@ -168,52 +216,6 @@ def game_loop():
     screen.update()
     if game_on:
         screen.ontimer(lambda: game_loop(), 50)  # run every 50ms
-
-
-def run_game():
-    global vessel, game_on
-    game_on = True
-    vessel = Spaceship(screen, monster_list)  # Restarting behavior cleanly
-    print_game()  # Check game state
-    screen.listen()
-    screen.onkey(vessel.move_Right, 'Right')
-    screen.onkey(vessel.move_Left, 'Left')
-    spawn_monsters(level)
-    update_life()
-    game_loop()
-    screen.mainloop()
-
-
-def print_game():
-    print(f'new game:\n'
-          f'current vessel missile :{vessel.missile}\n'
-          f'active monster: {active_monsters}\n'
-          f'active gift {active_gifts}\n'
-          f'monster list {monster_list}')
-
-
-# Function used only when resetting the game
-def end_game():
-    global monster_list, active_life, level, active_monsters
-    for monster in monster_list:
-        monster.hideturtle()
-        monster.teleport(1000, 1000)
-    monster_list.clear()
-
-    for missile in active_missiles:
-        missile.hideturtle()
-        missile.teleport(1000, 1000)
-
-    for gift in active_gifts:
-        gift.hideturtle()
-        gift.teleport(1000, 1000)
-
-    vessel.hideturtle()
-    vessel.teleport(1000, 1000)
-
-    active_monsters.clear()
-    active_life.clear()
-    level = 1
 
 
 run_game()
