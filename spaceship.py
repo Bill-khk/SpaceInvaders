@@ -117,16 +117,17 @@ class Gift(Turtle):
         self.move()
 
     def move(self):
-        print('Gift moving')
-        if self.ycor() > -400:  # Bop of screen limit
-            self.forward(10)
-            self.check_pickup()
-        else:
-            print('Lost gift')
-            self.hideturtle()
-            self.exist = False
-            if self in active_gifts:
-                active_gifts.remove(self)
+        if self.exist:
+            print('Gift moving')
+            if self.ycor() > -400:  # Bop of screen limit
+                self.forward(10)
+                self.check_pickup()
+            else:
+                print('Lost gift')
+                self.hideturtle()
+                self.exist = False
+                if self in active_gifts:
+                    active_gifts.remove(self)
 
     def check_pickup(self):
         if self.exist:

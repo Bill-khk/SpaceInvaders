@@ -122,16 +122,19 @@ def check_game():
 def check_missile_hit(monster):
     for missile in active_missiles:
         if missile.exist:
-            if monster.xcor() + 20 >= missile.xcor() >= monster.xcor() - 20 and missile.ycor() >= monster.ycor() - 20:
-                missile.exist = False
-                missile.hideturtle()
-                monster.life -= missile.vessel.power
-                if monster.life <= 0:
-                    print(f'Invader destroyed - {len(monster_list)}')
-                    monster_list.remove(monster)
-                    monster.hideturtle()
-                    missile.random_drop(monster)
-                    monster.teleport(1000, 1000)
+            if monster.exist:
+                if monster.xcor() + 20 >= missile.xcor() >= monster.xcor() - 20 and missile.ycor() >= monster.ycor() - 20:
+                    missile.exist = False
+                    missile.hideturtle()
+                    monster.life -= missile.vessel.power
+                    if monster.life <= 0:
+                        print(f'Invader destroyed - {len(monster_list)}')
+                        monster_list.remove(monster)
+                        if monster in active_monsters:
+                            active_monsters.remove(monster)
+                        monster.hideturtle()
+                        missile.random_drop(monster)
+                        monster.teleport(1000, 1000)
 
 
 def game_loop():
