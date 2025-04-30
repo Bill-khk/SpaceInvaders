@@ -11,6 +11,12 @@ screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
+# TODO Display the level on the top left corner
+# TODO Implement the dragon fireball behavior
+# TODO Check the several Row
+# TODO implement the heart gift, shield gift
+# TODO Implement the 'stay pushed' movement to move more quickly
+
 
 # Used to create small version of PNG icon
 def resize(URL):
