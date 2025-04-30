@@ -11,7 +11,6 @@ screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
-# TODO Display the level on the top left corner
 # TODO Implement the dragon fireball behavior
 # TODO Check the several Row
 # TODO implement the heart gift, shield gift
@@ -35,6 +34,13 @@ vessel: [Spaceship] = None
 game_on = False
 start_time = time.time()  # Used in the main loop, to activate a monster every two sec
 last_behave = 0  # Used to know last time we activate a monster behavior
+
+# Turtle used for level display
+level_info = Turtle()
+level_info.penup()
+level_info.hideturtle()
+level_info.teleport(x=-280, y=410)
+level_info.write(f'Level : {level}', font=("Courier", 14, "bold"))
 
 
 def spawn_monsters(level, row=1, col=7):
@@ -119,6 +125,7 @@ def check_game():
     elif len(monster_list) == 0:
         messagebox.showinfo(title='Level done', message="Going to the next level !", )
         level += 1
+        update_level(level)
         # end_game()
         #run_game()
         spawn_monsters(level)
@@ -155,6 +162,14 @@ def run_game():
     screen.onkey(vessel.move_Left, 'Left')
     spawn_monsters(level)
     update_life()
+
+    # Display level
+    level_info = Turtle()
+    level_info.penup()
+    level_info.teleport(x=-400, y=400)
+    level_info.hideturtle()
+    level_info.write(f'Level : {level}')
+
     game_loop()
     screen.mainloop()
 
@@ -165,6 +180,11 @@ def print_game():
           f'active monster: {active_monsters}\n'
           f'active gift {active_gifts}\n'
           f'monster list {monster_list}')
+
+def update_level(level):
+    global level_info
+    level_info.clear()
+    level_info.write(f'Level : {level}', font=("Courier", 14, "bold"))
 
 
 # Function used only when resetting the game
