@@ -4,7 +4,7 @@ import turtle
 from turtle import Screen, Turtle
 from PIL import Image
 from spaceship import Spaceship, active_gifts, active_missiles
-from invader import Ant, Spider, Dragon, active_monsters
+from invader import Ant, Spider, Dragon, active_monsters, active_fireball
 from tkinter import messagebox
 
 screen = Screen()
@@ -54,7 +54,8 @@ def spawn_monsters(level, row=1, col=7):
         x_origin = -250
         for y in range(col):
             if level < 2:
-                monster_class = random.choice([Ant])
+                #monster_class = random.choice([Ant])
+                monster_class = random.choice([Dragon]) #TODO Remove
             elif level < 4:
                 monster_class = random.choice([Ant, Spider])
             else:
@@ -235,6 +236,9 @@ def game_loop():
             monster_list.remove(monster)
         if check_collision(monster):
             monster_list.remove(monster)
+
+    for fire in active_fireball:
+        fire.move()
 
     if check_game():
         turtle.bye()

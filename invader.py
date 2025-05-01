@@ -43,8 +43,8 @@ class Invader(Turtle):
         # if luck % self.rate == 0:
         if len(active_monsters) < monster_lim:
             print('Behave !')
-            active_monsters.append(self)
             self.behave()
+            active_monsters.append(self)
         else:
             print('To many monster moving already')
         print(f'number of active monster :{len(active_monsters)}')
@@ -72,21 +72,29 @@ class Dragon(Invader):
         self.shape(self.dragon_url)
         self.life = 40
 
+    def behave(self):
+        if self not in active_monsters:
+            if self.exist:
+                fire = self.Fireball(self)
+                active_fireball.append(fire)
+                print('fire')
+
     class Fireball(Turtle):
-        def __init__(self, invader, x_offset):
+        def __init__(self, invader):
             super().__init__()
             active_fireball.append(self)
             self.invader = invader
             self.exist = True
 
             self.shape('classic')
-            self.setheading(90)
+            self.setheading(270)
+            self.color('red')
             self.penup()
-            self.teleport(invader.xcor(), invader.ycor()-10)
+            self.teleport(invader.xcor(), invader.ycor()-40)
 
         def move(self):
             if self.exist:
-                if self.ycor() < -450:  # Bot of screen limit
+                if self.ycor() > -450:  # Bot of screen limit
                     self.forward(20)
                 else:
                     self.hideturtle()
