@@ -12,11 +12,11 @@ screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
 
-# TODO Implement the dragon fireball behavior
 # TODO Check the several Row
 # TODO implement the heart gift, shield gift
 # TODO Implement the 'stay pushed' movement to move more quickly
-
+# TODO Update the monster_limit with level
+# TODO reduce the monster action time with level
 
 # Used to create small version of PNG icon
 def resize(URL):
@@ -30,7 +30,7 @@ def resize(URL):
 
 monster_list = []
 active_life = []
-level = 1
+level = 2
 vessel: [Spaceship] = None
 game_on = False
 start_time = time.time()  # Used in the main loop, to activate a monster every two sec
@@ -50,13 +50,12 @@ def spawn_monsters(level, row=1, col=7):
     monster_list.clear()
     y_origin = 350
     if level % 3 == 0:
-        row = + 1
+        row += 1
     for i in range(row):
         x_origin = -250
         for y in range(col):
             if level < 2:
-                #monster_class = random.choice([Ant])
-                monster_class = random.choice([Dragon])  #TODO Remove
+                monster_class = random.choice([Ant])
             elif level < 4:
                 monster_class = random.choice([Ant, Spider])
             else:
@@ -140,7 +139,8 @@ def check_missile_hit(shooter, target, active_list):
     for missile in active_list:
         if missile.exist:
             if target.exist:
-                if target.xcor() + 20 >= missile.xcor() >= target.xcor() - 20 and abs(missile.ycor() - target.ycor()) <= 20:
+                if target.xcor() + 20 >= missile.xcor() >= target.xcor() - 20 and abs(
+                        missile.ycor() - target.ycor()) <= 20:
                     missile.exist = False
                     missile.hideturtle()
                     active_list.remove(missile)

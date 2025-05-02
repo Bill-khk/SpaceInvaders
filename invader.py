@@ -5,6 +5,7 @@ import random
 active_monsters = []
 active_fireball = []
 
+
 class Invader(Turtle):
     bug_url = 'gif/bug.gif'
     turtle.register_shape(bug_url)
@@ -36,9 +37,7 @@ class Invader(Turtle):
             active_monsters.remove(self)
         print(f'number of active monster :{len(active_monsters)}')
 
-    def roll_action(self):
-        # TODO Change to make a monster roll every two second
-        monster_lim = 2
+    def roll_action(self, monster_lim=2):
         # luck = random.randint(1, 10000)
         # if luck % self.rate == 0:
         if len(active_monsters) < monster_lim:
@@ -90,7 +89,7 @@ class Dragon(Invader):
             self.setheading(270)
             self.color('red')
             self.penup()
-            self.teleport(invader.xcor(), invader.ycor()-40)
+            self.teleport(invader.xcor(), invader.ycor() - 40)
 
         def move(self):
             if self.exist:
@@ -101,7 +100,8 @@ class Dragon(Invader):
                     self.exist = False
                     if self in active_fireball:
                         active_fireball.remove(self)
-                    active_monsters.remove(self.invader)
+                    if self.invader in active_monsters:
+                        active_monsters.remove(self.invader)
 
 
 class Spider(Invader):
@@ -119,7 +119,3 @@ class Spider(Invader):
             else:
                 self.pass_over()
                 return True
-
-
-
-
