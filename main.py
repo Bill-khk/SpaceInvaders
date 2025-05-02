@@ -1,11 +1,14 @@
+import math
 import random
 import time
 import turtle
-from turtle import Screen, Turtle
-from PIL import Image
-from spaceship import Spaceship, active_gifts, active_missiles
-from invader import Invader, Ant, Spider, Dragon, active_monsters, active_fireball
 from tkinter import messagebox
+from turtle import Screen, Turtle
+
+from PIL import Image
+
+from invader import Invader, Ant, Spider, Dragon, active_monsters, active_fireball
+from spaceship import Spaceship, active_gifts, active_missiles
 
 screen = Screen()
 screen.setup(width=600, height=900)
@@ -49,8 +52,7 @@ def spawn_monsters(level, row=1, col=7):
     active_monsters.clear()
     monster_list.clear()
     y_origin = 350
-    if level % 3 == 0:
-        row += 1
+    row += math.trunc(level/3)
     for i in range(row):
         x_origin = -250
         for y in range(col):
@@ -140,7 +142,7 @@ def check_missile_hit(shooter, target, active_list):
         if missile.exist:
             if target.exist:
                 if target.xcor() + 20 >= missile.xcor() >= target.xcor() - 20 and abs(
-                        missile.ycor() - target.ycor()) <= 20:
+                        missile.ycor() - target.ycor()) <= 20: # TODO Check if can simplify the func by using abs()
                     missile.exist = False
                     missile.hideturtle()
                     active_list.remove(missile)
