@@ -95,12 +95,13 @@ class Dragon(Invader):
         def move(self):
             if self.exist:
                 if self.ycor() > -450:  # Bot of screen limit
-                    self.forward(20)
+                    self.forward(10)
                 else:
                     self.hideturtle()
                     self.exist = False
                     if self in active_fireball:
                         active_fireball.remove(self)
+                    active_monsters.remove(self.invader)
 
 
 class Spider(Invader):

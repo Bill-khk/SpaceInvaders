@@ -18,6 +18,7 @@ class Spaceship(Turtle):
         self.teleport(0, -400)
         self.penup()
         self.speed(0)
+        self.exist = True
         # Characteristics
         self.speed = 30
         self.power = 20
@@ -118,7 +119,7 @@ class Gift(Turtle):
 
     def move(self):
         if self.exist:
-            print('Gift moving')
+            # print('Gift moving')
             if self.ycor() > -400:  # Bop of screen limit
                 self.forward(10)
                 self.check_pickup()

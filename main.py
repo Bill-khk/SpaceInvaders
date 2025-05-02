@@ -4,12 +4,13 @@ import turtle
 from turtle import Screen, Turtle
 from PIL import Image
 from spaceship import Spaceship, active_gifts, active_missiles
-from invader import Ant, Spider, Dragon, active_monsters, active_fireball
+from invader import Invader, Ant, Spider, Dragon, active_monsters, active_fireball
 from tkinter import messagebox
 
 screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
+
 
 # TODO Implement the dragon fireball behavior
 # TODO Check the several Row
@@ -55,7 +56,7 @@ def spawn_monsters(level, row=1, col=7):
         for y in range(col):
             if level < 2:
                 #monster_class = random.choice([Ant])
-                monster_class = random.choice([Dragon]) #TODO Remove
+                monster_class = random.choice([Dragon])  #TODO Remove
             elif level < 4:
                 monster_class = random.choice([Ant, Spider])
             else:
@@ -135,22 +136,27 @@ def check_game():
         return False
 
 
-def check_missile_hit(monster):
-    for missile in active_missiles:
+def check_missile_hit(shooter, target, active_list):
+    for missile in active_list:
         if missile.exist:
-            if monster.exist:
-                if monster.xcor() + 20 >= missile.xcor() >= monster.xcor() - 20 and missile.ycor() >= monster.ycor() - 20:
+            if target.exist:
+                if target.xcor() + 20 >= missile.xcor() >= target.xcor() - 20 and abs(missile.ycor() - target.ycor()) <= 20:
                     missile.exist = False
                     missile.hideturtle()
-                    monster.life -= missile.vessel.power
-                    if monster.life <= 0:
-                        print(f'Invader destroyed - {len(monster_list)}')
-                        monster_list.remove(monster)
-                        if monster in active_monsters:
-                            active_monsters.remove(monster)
-                        monster.hideturtle()
-                        missile.random_drop(monster)
-                        monster.teleport(1000, 1000)
+                    active_list.remove(missile)
+                    if isinstance(target, Invader):
+                        target.life -= shooter.power
+                        if target.life <= 0:
+                            monster_list.remove(target)
+                            missile.random_drop(target)
+                            print(f'Target destroyed - {len(monster_list)}')
+                            if target in active_monsters:
+                                active_monsters.remove(target)
+                            target.hideturtle()
+                            target.teleport(1000, 1000)
+                    else:
+                        vessel.life -= 1
+                        update_life()
 
 
 def run_game():
@@ -181,6 +187,7 @@ def print_game():
           f'active monster: {active_monsters}\n'
           f'active gift {active_gifts}\n'
           f'monster list {monster_list}')
+
 
 def update_level(level):
     global level_info
@@ -229,7 +236,7 @@ def game_loop():
         monster.roll_action()
 
     for monster in monster_list:
-        check_missile_hit(monster)
+        check_missile_hit(vessel, monster, active_missiles)
 
     for monster in active_monsters[:]:
         if monster.behave():
@@ -239,6 +246,7 @@ def game_loop():
 
     for fire in active_fireball:
         fire.move()
+        check_missile_hit(fire.invader, vessel, active_fireball)
 
     if check_game():
         turtle.bye()
