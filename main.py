@@ -14,6 +14,7 @@ screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
+# TODO - Fix : Problem when monster are passing over
 # Upgrade Ideas
 # TODO Implement the 'stay pushed' movement to move more quickly
 # TODO Update the monster_limit with level
@@ -247,7 +248,7 @@ def game_loop():
 
     for monster in active_monsters[:]:
         if monster.behave():
-            monster_list.remove(monster)
+            monster_list.remove(monster)  # Return True only when the monster is out of the screen
         if check_collision(monster):
             monster_list.remove(monster)
 
