@@ -14,12 +14,11 @@ screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
-
-# TODO Check the several Row
-# TODO implement the heart gift, shield gift
+# Upgrade Ideas
 # TODO Implement the 'stay pushed' movement to move more quickly
 # TODO Update the monster_limit with level
 # TODO reduce the monster action time with level
+# Create a boss
 
 # Used to create small version of PNG icon
 def resize(URL):
@@ -33,7 +32,7 @@ def resize(URL):
 
 monster_list = []
 active_life = []
-level = 2
+level = 1
 vessel: [Spaceship] = None
 game_on = False
 start_time = time.time()  # Used in the main loop, to activate a monster every two sec
@@ -78,7 +77,7 @@ def check_collision(monster):
             monster.hideturtle()
             monster.teleport(1000, 1000)
             active_monsters.remove(monster)
-            vessel.life -= 1
+            remove_life()
             update_life()
             return True
         else:
@@ -86,6 +85,12 @@ def check_collision(monster):
     else:
         return False
 
+def remove_life():
+    if vessel.extra_life:
+        vessel.extra_life = False
+    else:
+        vessel.life -= 1
+    update_life()
 
 def update_life():
     global vessel
@@ -129,8 +134,6 @@ def check_game():
         messagebox.showinfo(title='Level done', message="Going to the next level !", )
         level += 1
         update_level(level)
-        # end_game()
-        #run_game()
         spawn_monsters(level)
         return False
     else:
@@ -157,7 +160,7 @@ def check_missile_hit(shooter, target, active_list):
                             target.hideturtle()
                             target.teleport(1000, 1000)
                     else:
-                        vessel.life -= 1
+                        remove_life()
                         update_life()
 
 
@@ -231,8 +234,10 @@ def game_loop():
 
     for gift in active_gifts[:]:
         gift.move()
+        if gift.check_pickup():
+            update_life()
 
-    if timelapse % 5 == 0 and timelapse != last_behave:
+    if timelapse % 4 == 0 and timelapse != last_behave:
         last_behave = timelapse
         monster = random.choice(monster_list)
         monster.roll_action()
