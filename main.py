@@ -14,7 +14,6 @@ screen = Screen()
 screen.setup(width=600, height=900)
 screen.tracer(0)  # Can be used with screen.update to increase the code speed
 
-# TODO - Fix : Problem when monster are passing over
 # Upgrade Ideas
 # TODO Implement the 'stay pushed' movement to move more quickly
 # TODO Update the monster_limit with level
@@ -247,10 +246,11 @@ def game_loop():
         check_missile_hit(vessel, monster, active_missiles)
 
     for monster in active_monsters[:]:
-        if monster.behave():
-            monster_list.remove(monster)  # Return True only when the monster is out of the screen
-        if check_collision(monster):
-            monster_list.remove(monster)
+        if monster.exist:
+            if monster.behave():
+                monster_list.remove(monster)  # Return True only when the monster is out of the screen
+            elif check_collision(monster):
+                monster_list.remove(monster)
 
     for fire in active_fireball:
         fire.move()
